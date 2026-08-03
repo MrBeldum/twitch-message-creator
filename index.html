@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Offline Twitch-style message image generator"
+    />
+    <title>Local Twitch Message Creator</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="assets/html-to-image.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div>
+        <p class="eyebrow">Offline utility</p>
+        <h1>Twitch Message Creator</h1>
+      </div>
+      <span class="privacy-label">No ads. No tracking. No uploads.</span>
+    </header>
+
+    <main class="workspace">
+      <section class="controls" aria-labelledby="controls-heading">
+        <div class="section-heading">
+          <span>01</span>
+          <h2 id="controls-heading">Build the message</h2>
+        </div>
+
+        <label class="field">
+          <span>Username</span>
+          <input
+            id="usernameInput"
+            type="text"
+            maxlength="40"
+            placeholder="username"
+            autocomplete="off"
+          />
+        </label>
+
+        <label class="field">
+          <span>Message</span>
+          <textarea
+            id="messageInput"
+            maxlength="500"
+            placeholder="Write a Twitch-style message"
+          ></textarea>
+        </label>
+
+        <fieldset class="control-group">
+          <legend>Username color</legend>
+          <div id="colorPalette" class="color-palette"></div>
+        </fieldset>
+
+        <fieldset class="control-group">
+          <legend>Badges</legend>
+          <div id="badgePalette" class="badge-palette"></div>
+          <label class="upload-button" for="customBadgeInput">
+            <span>Add custom badge</span>
+            <input id="customBadgeInput" type="file" accept="image/*" />
+          </label>
+        </fieldset>
+
+        <div class="actions">
+          <button id="downloadButton" class="primary-button" type="button">
+            Download transparent PNG
+          </button>
+          <button id="resetButton" class="secondary-button" type="button">
+            Reset
+          </button>
+        </div>
+      </section>
+
+      <section class="preview-panel" aria-labelledby="preview-heading">
+        <div class="section-heading light">
+          <span>02</span>
+          <h2 id="preview-heading">Preview</h2>
+        </div>
+
+        <div class="preview-stage">
+          <div id="messagePreview" class="message">
+            <div id="selectedBadges" class="embleds-div"></div>
+            <p id="usernamePreview" class="username">
+              username<span>:</span>
+            </p>
+            <p id="messagePreviewText" class="message-text">message</p>
+          </div>
+        </div>
+
+        <div class="output-notes">
+          <p id="statusText" role="status">Ready to export at 2x resolution.</p>
+          <p>The rounded corners remain transparent for video overlays.</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

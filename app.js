@@ -1,0 +1,251 @@
+(() => {
+  "use strict";
+
+  const COLORS = [
+    "#e01220",
+    "#0512fb",
+    "#058020",
+    "#9e2f3d",
+    "#e07f65",
+    "#89c24b",
+    "#e04d20",
+    "#2d896b",
+    "#c0a03b",
+    "#b96c3a",
+    "#579aa9",
+    "#1f8efb",
+    "#e06cbb",
+    "#7c37e2",
+    "#05ed8d",
+  ];
+
+  const BADGES = [
+    { id: "staff", label: "Staff", src: "assets/staff.png" },
+    { id: "turbo", label: "Turbo", src: "assets/turbo.png" },
+    { id: "broadcaster", label: "Broadcaster", src: "assets/broadcaster.png" },
+    { id: "moderator", label: "Moderator", src: "assets/moderator.png" },
+    { id: "verified", label: "Verified", src: "assets/verified.png" },
+    { id: "vip", label: "VIP", src: "assets/vip.png" },
+    { id: "artist", label: "Artist", src: "assets/artist.png" },
+    { id: "dj", label: "DJ", src: "assets/dj.png" },
+    { id: "subscriber", label: "Subscriber", src: "assets/subscriber.png" },
+  ];
+
+  const DEFAULT_COLOR = "#7c37e2";
+  const state = {
+    username: "",
+    message: "",
+    color: DEFAULT_COLOR,
+    selectedBadgeIds: [],
+    customBadges: [],
+  };
+
+  const elements = {
+    usernameInput: document.querySelector("#usernameInput"),
+    messageInput: document.querySelector("#messageInput"),
+    colorPalette: document.querySelector("#colorPalette"),
+    badgePalette: document.querySelector("#badgePalette"),
+    customBadgeInput: document.querySelector("#customBadgeInput"),
+    messagePreview: document.querySelector("#messagePreview"),
+    selectedBadges: document.querySelector("#selectedBadges"),
+    usernamePreview: document.querySelector("#usernamePreview"),
+    messagePreviewText: document.querySelector("#messagePreviewText"),
+    downloadButton: document.querySelector("#downloadButton"),
+    resetButton: document.querySelector("#resetButton"),
+    statusText: document.querySelector("#statusText"),
+  };
+
+  function allBadges() {
+    return [...BADGES, ...state.customBadges];
+  }
+
+  function selectedBadges() {
+    const badgesById = new Map(allBadges().map((badge) => [badge.id, badge]));
+    return state.selectedBadgeIds
+      .map((id) => badgesById.get(id))
+      .filter(Boolean);
+  }
+
+  function renderColors() {
+    elements.colorPalette.replaceChildren(
+      ...COLORS.map((color) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `color-button${state.color === color ? " selected" : ""}`;
+        button.style.setProperty("--swatch", color);
+        button.setAttribute("aria-label", `Use username color ${color}`);
+        button.setAttribute("aria-pressed", String(state.color === color));
+        button.addEventListener("click", () => {
+          state.color = color;
+          renderColors();
+          renderPreview();
+        });
+        return button;
+      }),
+    );
+  }
+
+  function renderBadges() {
+    elements.badgePalette.replaceChildren(
+      ...allBadges().map((badge) => {
+        const isSelected = state.selectedBadgeIds.includes(badge.id);
+        const button = document.createElement("button");
+        const image = document.createElement("img");
+
+        button.type = "button";
+        button.className = `badge-button${isSelected ? " selected" : ""}`;
+        button.title = badge.label;
+        button.setAttribute("aria-label", `${isSelected ? "Remove" : "Add"} ${badge.label} badge`);
+        button.setAttribute("aria-pressed", String(isSelected));
+        image.src = badge.src;
+        image.alt = "";
+        button.append(image);
+        button.addEventListener("click", () => toggleBadge(badge.id));
+        return button;
+      }),
+    );
+  }
+
+  function toggleBadge(id) {
+    const index = state.selectedBadgeIds.indexOf(id);
+    if (index === -1) {
+      state.selectedBadgeIds.push(id);
+    } else {
+      state.selectedBadgeIds.splice(index, 1);
+    }
+    renderBadges();
+    renderPreview();
+  }
+
+  function renderPreview() {
+    const username = state.username.trim() || "username";
+    const message = state.message || "message";
+    const colon = document.createElement("span");
+    colon.textContent = ":";
+
+    elements.usernamePreview.replaceChildren(username, colon);
+    elements.usernamePreview.style.color = state.color;
+    elements.messagePreviewText.textContent = message;
+    elements.selectedBadges.replaceChildren(
+      ...selectedBadges().map((badge) => {
+        const image = document.createElement("img");
+        image.src = badge.src;
+        image.alt = badge.label;
+        return image;
+      }),
+    );
+  }
+
+  function readFileAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => resolve(String(reader.result)));
+      reader.addEventListener("error", () => reject(reader.error));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.addEventListener("load", () => resolve(image), { once: true });
+      image.addEventListener("error", () => reject(new Error(`Could not load ${src}`)), {
+        once: true,
+      });
+      image.src = src;
+    });
+  }
+
+  function safeFilename(username, message) {
+    const stem = `message_${username || "username"}_${message || "message"}`
+      .replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 120);
+    return `${stem || "message"}.png`;
+  }
+
+  async function downloadMessage() {
+    elements.downloadButton.disabled = true;
+    elements.statusText.textContent = "Rendering PNG...";
+
+    try {
+      if (!window.htmlToImage) throw new Error("The PNG renderer did not load.");
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+      const width = elements.messagePreview.clientWidth * 2;
+      const height = elements.messagePreview.clientHeight * 2;
+      const url = await window.htmlToImage.toPng(elements.messagePreview, {
+        pixelRatio: 2,
+        style: {
+          margin: "0",
+          transform: "none",
+        },
+      });
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = safeFilename(state.username, state.message);
+      document.body.append(link);
+      link.click();
+      link.remove();
+      elements.statusText.textContent = `${width} x ${height} PNG downloaded.`;
+    } catch (error) {
+      console.error(error);
+      elements.statusText.textContent = "Export failed. Open this page through start-local.sh and retry.";
+    } finally {
+      elements.downloadButton.disabled = false;
+    }
+  }
+
+  function reset() {
+    state.username = "";
+    state.message = "";
+    state.color = DEFAULT_COLOR;
+    state.selectedBadgeIds = [];
+    state.customBadges = [];
+    elements.usernameInput.value = "";
+    elements.messageInput.value = "";
+    elements.customBadgeInput.value = "";
+    elements.statusText.textContent = "Ready to export at 2x resolution.";
+    renderColors();
+    renderBadges();
+    renderPreview();
+  }
+
+  elements.usernameInput.addEventListener("input", (event) => {
+    state.username = event.currentTarget.value;
+    renderPreview();
+  });
+
+  elements.messageInput.addEventListener("input", (event) => {
+    state.message = event.currentTarget.value;
+    renderPreview();
+  });
+
+  elements.customBadgeInput.addEventListener("change", async (event) => {
+    const [file] = event.currentTarget.files;
+    if (!file) return;
+
+    try {
+      const src = await readFileAsDataUrl(file);
+      await loadImage(src);
+      const id = `custom-${Date.now()}`;
+      state.customBadges.push({ id, label: file.name, src });
+      state.selectedBadgeIds.push(id);
+      renderBadges();
+      renderPreview();
+      elements.statusText.textContent = `Added custom badge: ${file.name}`;
+    } catch (error) {
+      console.error(error);
+      elements.statusText.textContent = "That badge image could not be loaded.";
+    } finally {
+      event.currentTarget.value = "";
+    }
+  });
+
+  elements.downloadButton.addEventListener("click", downloadMessage);
+  elements.resetButton.addEventListener("click", reset);
+
+  renderColors();
+  renderBadges();
+  renderPreview();
+})();
