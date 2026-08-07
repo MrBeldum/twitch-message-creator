@@ -1,12 +1,8 @@
 @font-face {
-  font-family: "Comentario1";
-  src: url("assets/message.woff2") format("woff2");
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Comentario2";
-  src: url("assets/username.woff2") format("woff2");
+  font-family: "Inter";
+  src: url("assets/inter-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
   font-display: swap;
 }
 
@@ -292,64 +288,58 @@ button,
 .preview-stage {
   min-height: 420px;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   place-items: center;
   overflow: auto;
   padding: 48px 24px;
 }
 
 .message {
-  background-color: #18181b;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  padding: 0 10px;
-  font-weight: 700;
-  gap: 10px;
-  overflow: hidden;
-  position: relative;
-  bottom: auto;
-  left: auto;
-  right: auto;
-  margin-top: 24px;
-  margin-bottom: 16px;
-  width: fit-content;
-  z-index: 100;
+  width: max-content;
+  min-width: 0;
+  max-width: min(100%, 650px);
+  margin: 0;
+  padding: 9px 25px;
+  overflow-wrap: anywhere;
+  background: #18181b;
+  color: #efeff1;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 32px;
 }
 
 .username {
-  font-family: "Comentario2";
   font-weight: 700;
-  color: #7c37e2;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 2px;
+  color: #8a2be2;
 }
 
 .username span {
-  color: white;
+  color: #efeff1;
+  font-weight: 400;
 }
 
 .message-text {
-  font-family: "Comentario1";
-  max-width: 28ch;
-  color: white;
+  white-space: pre-wrap;
 }
 
-.message > .embleds-div {
-  justify-content: left;
-  display: flex;
-  gap: 3px;
+.message-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-right: 5px;
+  vertical-align: middle;
 }
 
-.message > .embleds-div:empty {
+.message-badges:empty {
   display: none;
 }
 
-.message > div > img {
-  height: 18px;
-  width: 18px;
+.message-badges img {
+  width: 27px;
+  height: 27px;
+  display: block;
+  object-fit: contain;
 }
 
 .output-notes {
@@ -388,20 +378,7 @@ button,
 
 @media (max-width: 768px) {
   .message {
-    width: 90%;
-    position: relative;
-    bottom: auto;
-    transform: none;
-    left: auto;
-    right: auto;
-    margin: 16px auto 8px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .message-text {
     max-width: 100%;
-    font-size: 0.9rem;
   }
 }
 
@@ -425,7 +402,6 @@ button,
   }
 
   .preview-stage {
-    justify-items: start;
     padding-inline: 0;
   }
 

@@ -2,7 +2,8 @@
 
 An offline, ad-free replacement for the single-message generator at
 `twitchmessagecreator.site`. It uses the same `html-to-image` rendering library,
-message markup, layout CSS, fonts, and 2x export settings as the source page.
+plus Twitch-style inline message layout and 2x export settings. The bundled
+Inter font keeps previews and downloads consistent without a network request.
 
 ## Run Locally
 

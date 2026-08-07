@@ -2,21 +2,21 @@
   "use strict";
 
   const COLORS = [
-    "#e01220",
-    "#0512fb",
-    "#058020",
-    "#9e2f3d",
-    "#e07f65",
-    "#89c24b",
-    "#e04d20",
-    "#2d896b",
-    "#c0a03b",
-    "#b96c3a",
-    "#579aa9",
-    "#1f8efb",
-    "#e06cbb",
-    "#7c37e2",
-    "#05ed8d",
+    "#ff0000",
+    "#0000ff",
+    "#008000",
+    "#b22222",
+    "#ff7f50",
+    "#9acd32",
+    "#ff4500",
+    "#2e8b57",
+    "#daa520",
+    "#d2691e",
+    "#5f9ea0",
+    "#1e90ff",
+    "#ff69b4",
+    "#8a2be2",
+    "#00ff7f",
   ];
 
   const BADGES = [
@@ -31,7 +31,7 @@
     { id: "subscriber", label: "Subscriber", src: "assets/subscriber.png" },
   ];
 
-  const DEFAULT_COLOR = "#7c37e2";
+  const DEFAULT_COLOR = "#8a2be2";
   const state = {
     username: "",
     message: "",
