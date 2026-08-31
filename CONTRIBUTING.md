@@ -10,6 +10,14 @@ This is a small static site: vanilla JS, no build step. Keep it that way.
 
 Opens `http://127.0.0.1:8765`. Opening `index.html` as a file works for some changes, but font/image/download behavior is only reliable through the local server.
 
+## Tests
+
+```bash
+node --test
+```
+
+Runs filename sanitization tests. No extra packages. Keep helpers in `filename.js` so they can be tested without a browser.
+
 ## What belongs here
 
 Bug fixes and small, concrete features that make the PNG closer to a real Twitch chat message, or that make export more reliable. Match existing style in `app.js` / `styles.css` (strict IIFE, no framework, no extra dependencies unless the issue requires it).
