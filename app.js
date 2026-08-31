@@ -1,6 +1,8 @@
 (() => {
   "use strict";
 
+  const safeFilename = globalThis.safeFilename;
+
   const COLORS = [
     "#ff0000",
     "#0000ff",
@@ -154,15 +156,6 @@
       });
       image.src = src;
     });
-  }
-
-  function safeFilename(username, message) {
-    const stem = `message_${username || "username"}_${message || "message"}`
-      .replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_")
-      .replace(/\s+/g, " ")
-      .trim()
-      .slice(0, 120);
-    return `${stem || "message"}.png`;
   }
 
   async function downloadMessage() {

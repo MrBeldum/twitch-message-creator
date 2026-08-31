@@ -19,6 +19,10 @@ terminal to stop it.
 You can also open `index.html` directly, although using `start-local.sh` avoids
 browser restrictions around local fonts, images, and downloads.
 
+## Tests
+
+`node --test` runs filename sanitization tests (no browser required).
+
 ## GitHub Pages
 
 Pushes to `main` deploy automatically through
