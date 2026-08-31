@@ -34,6 +34,17 @@
   ];
 
   const DEFAULT_COLOR = "#8a2be2";
+
+  function parseHexColor(value) {
+    const match = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.exec(String(value).trim());
+    if (!match) return null;
+    let hex = match[1].toLowerCase();
+    if (hex.length === 3) {
+      hex = hex.split("").map((ch) => ch + ch).join("");
+    }
+    return `#${hex}`;
+  }
+
   const state = {
     username: "",
     message: "",
@@ -46,6 +57,7 @@
     usernameInput: document.querySelector("#usernameInput"),
     messageInput: document.querySelector("#messageInput"),
     colorPalette: document.querySelector("#colorPalette"),
+    colorHexInput: document.querySelector("#colorHexInput"),
     badgePalette: document.querySelector("#badgePalette"),
     customBadgeInput: document.querySelector("#customBadgeInput"),
     messagePreview: document.querySelector("#messagePreview"),
@@ -79,6 +91,8 @@
         button.setAttribute("aria-pressed", String(state.color === color));
         button.addEventListener("click", () => {
           state.color = color;
+          elements.colorHexInput.value = color;
+          elements.colorHexInput.setAttribute("aria-invalid", "false");
           renderColors();
           renderPreview();
         });
@@ -198,11 +212,28 @@
     elements.usernameInput.value = "";
     elements.messageInput.value = "";
     elements.customBadgeInput.value = "";
+    elements.colorHexInput.value = DEFAULT_COLOR;
+    elements.colorHexInput.setAttribute("aria-invalid", "false");
     elements.statusText.textContent = "Ready to export at 2x resolution.";
     renderColors();
     renderBadges();
     renderPreview();
   }
+
+  elements.colorHexInput.addEventListener("input", (event) => {
+    const parsed = parseHexColor(event.currentTarget.value);
+    if (!parsed) {
+      event.currentTarget.setAttribute(
+        "aria-invalid",
+        event.currentTarget.value.trim() ? "true" : "false",
+      );
+      return;
+    }
+    state.color = parsed;
+    event.currentTarget.setAttribute("aria-invalid", "false");
+    renderColors();
+    renderPreview();
+  });
 
   elements.usernameInput.addEventListener("input", (event) => {
     state.username = event.currentTarget.value;

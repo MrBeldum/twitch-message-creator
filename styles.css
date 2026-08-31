@@ -194,6 +194,18 @@ button,
   transform: scale(1.08);
 }
 
+.hex-field {
+  margin: 12px 0 0;
+}
+
+.hex-field input {
+  max-width: 8.5rem;
+}
+
+.hex-field input[aria-invalid="true"] {
+  border-color: #ff8280;
+}
+
 .badge-button {
   width: 38px;
   height: 38px;
