@@ -179,6 +179,11 @@
     try {
       if (!window.htmlToImage) throw new Error("The PNG renderer did not load.");
       if (document.fonts && document.fonts.ready) await document.fonts.ready;
+      await Promise.all(
+        [...elements.messagePreview.querySelectorAll("img")].map((img) =>
+          img.decode().catch(() => undefined),
+        ),
+      );
       const width = elements.messagePreview.clientWidth * 2;
       const height = elements.messagePreview.clientHeight * 2;
       const url = await window.htmlToImage.toPng(elements.messagePreview, {
