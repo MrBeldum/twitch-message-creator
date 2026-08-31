@@ -16,7 +16,7 @@ Opens `http://127.0.0.1:8765`. Opening `index.html` as a file works for some cha
 node --test
 ```
 
-Runs filename sanitization tests. No extra packages. Keep helpers in `filename.js` so they can be tested without a browser.
+Runs Node unit tests (filename sanitization, hex color parsing). No extra packages. Keep pure helpers in modules like `filename.js` / `color.js` so they can be tested without a browser.
 
 ## What belongs here
 
