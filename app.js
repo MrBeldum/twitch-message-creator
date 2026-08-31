@@ -2,6 +2,7 @@
   "use strict";
 
   const safeFilename = globalThis.safeFilename;
+  const parseHexColor = globalThis.parseHexColor;
 
   const COLORS = [
     "#ff0000",
@@ -34,16 +35,6 @@
   ];
 
   const DEFAULT_COLOR = "#8a2be2";
-
-  function parseHexColor(value) {
-    const match = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.exec(String(value).trim());
-    if (!match) return null;
-    let hex = match[1].toLowerCase();
-    if (hex.length === 3) {
-      hex = hex.split("").map((ch) => ch + ch).join("");
-    }
-    return `#${hex}`;
-  }
 
   const state = {
     username: "",

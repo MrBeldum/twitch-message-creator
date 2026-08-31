@@ -5,6 +5,15 @@ An offline, ad-free replacement for the single-message generator at
 plus Twitch-style inline message layout and 2x export settings. The bundled
 Inter font keeps previews and downloads consistent without a network request.
 
+**Live demo:** https://mrbeldum.github.io/twitch-message-creator/
+
+## Features
+
+- Offline and ad-free: no analytics, uploads, or third-party calls for fonts
+- Custom hex username colors plus the classic Twitch palette
+- Built-in badges and optional custom badge images
+- 2x PNG export with Twitch-style dark chat background
+
 ## Run Locally
 
 ```bash
@@ -21,7 +30,9 @@ browser restrictions around local fonts, images, and downloads.
 
 ## Tests
 
-`node --test` runs filename sanitization tests (no browser required).
+`node --test` runs Node unit tests (filename sanitization and hex color parsing;
+no browser required). See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup and
+PR expectations.
 
 ## GitHub Pages
 
