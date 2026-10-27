@@ -12,7 +12,13 @@ Inter font keeps previews and downloads consistent without a network request.
 - Offline and ad-free: no analytics, uploads, or third-party calls for fonts
 - Custom hex username colors plus the classic Twitch palette
 - Built-in badges and optional custom badge images
+- Remembers text, color, and built-in badges across reloads on the same browser/origin
 - 2x PNG export with Twitch-style dark chat background
+
+Editor state stays in this browser's localStorage (`tmc-state-v1`); Reset clears
+it. Custom badge images are not saved and must be re-added after a reload. If
+browser storage is disabled or full, editing and PNG export still work, but
+changes may not survive a reload.
 
 ## Run Locally
 
@@ -30,7 +36,7 @@ browser restrictions around local fonts, images, and downloads.
 
 ## Tests
 
-`node --test` runs Node unit tests (filename sanitization and hex color parsing;
+`node --test` runs Node tests (filename sanitization, hex color parsing, and editor persistence;
 no browser required). See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup and
 PR expectations.
 

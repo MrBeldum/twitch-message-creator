@@ -16,7 +16,7 @@ Opens `http://127.0.0.1:8765`. Opening `index.html` as a file works for some cha
 node --test
 ```
 
-Runs Node unit tests (filename sanitization, hex color parsing). No extra packages. Keep pure helpers in modules like `filename.js` / `color.js` so they can be tested without a browser.
+Runs Node tests (filename sanitization, hex color parsing, editor persistence). No extra packages. Persistence tests run the app's event handlers with a minimal DOM/storage fixture. Keep pure helpers in modules like `filename.js` / `color.js` so they can be tested without a browser.
 
 ## What belongs here
 
