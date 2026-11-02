@@ -194,12 +194,27 @@ button,
   transform: scale(1.08);
 }
 
-.hex-field {
-  margin: 12px 0 0;
+.color-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.hex-field,
+.picker-field {
+  margin: 0;
 }
 
 .hex-field input {
   max-width: 8.5rem;
+}
+
+.picker-field input {
+  width: 52px;
+  height: 46px;
+  padding: 4px;
+  cursor: pointer;
 }
 
 .hex-field input[aria-invalid="true"] {

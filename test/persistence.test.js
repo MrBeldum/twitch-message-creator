@@ -159,3 +159,37 @@ test("unavailable storage and quota errors do not interrupt editing or reset", (
     assert.equal(app("usernameInput").value, "");
   }
 });
+
+test("color picker starts at the restored color and follows palette and valid hex changes", () => {
+  const storage = storageWith(JSON.stringify({ color: "#123" }));
+  const app = boot(storage);
+  assert.equal(app("colorPickerInput").value, "#112233");
+  app("colorPalette").children[1].fire("click");
+  assert.equal(app("colorPickerInput").value, "#0000ff");
+  input(app, "colorHexInput", "#AbC");
+  assert.equal(app("colorPickerInput").value, "#aabbcc");
+  input(app, "colorHexInput", "#oops");
+  assert.equal(app("colorPickerInput").value, "#aabbcc");
+  assert.equal(JSON.parse(storage.getItem(KEY)).color, "#aabbcc");
+});
+
+test("color picker input updates state, hex field, palette selection, preview, and storage", () => {
+  const storage = storageWith();
+  const app = boot(storage);
+  input(app, "colorPickerInput", "#ff69b4");
+  assert.equal(app("colorHexInput").value, "#ff69b4");
+  assert.equal(app("colorPickerInput").value, "#ff69b4");
+  assert.equal(app("usernamePreview").style.color, "#ff69b4");
+  assert.equal(app("colorPalette").children[12].attributes["aria-pressed"], "true");
+  assert.equal(JSON.parse(storage.getItem(KEY)).color, "#ff69b4");
+  assert.equal(boot(storage)("colorPickerInput").value, "#ff69b4");
+});
+
+test("reset returns the color picker to the default color", () => {
+  const app = boot(storageWith());
+  input(app, "colorPickerInput", "#00ff7f");
+  assert.equal(app("colorPickerInput").value, "#00ff7f");
+  app("resetButton").fire("click");
+  assert.equal(app("colorPickerInput").value, "#8a2be2");
+  assert.equal(app("colorHexInput").value, "#8a2be2");
+});
