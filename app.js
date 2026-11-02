@@ -82,6 +82,7 @@
     messageInput: document.querySelector("#messageInput"),
     colorPalette: document.querySelector("#colorPalette"),
     colorHexInput: document.querySelector("#colorHexInput"),
+    colorPickerInput: document.querySelector("#colorPickerInput"),
     badgePalette: document.querySelector("#badgePalette"),
     customBadgeInput: document.querySelector("#customBadgeInput"),
     messagePreview: document.querySelector("#messagePreview"),
@@ -92,6 +93,12 @@
     resetButton: document.querySelector("#resetButton"),
     statusText: document.querySelector("#statusText"),
   };
+
+  // state.color is always a normalized #rrggbb value, which is exactly
+  // what a native color input accepts, so it can be assigned directly.
+  function syncColorPicker() {
+    elements.colorPickerInput.value = state.color;
+  }
 
   function allBadges() {
     return [...BADGES, ...state.customBadges];
@@ -118,6 +125,7 @@
           saveState();
           elements.colorHexInput.value = color;
           elements.colorHexInput.setAttribute("aria-invalid", "false");
+          syncColorPicker();
           renderColors();
           renderPreview();
         });
@@ -250,6 +258,7 @@
     elements.customBadgeInput.value = "";
     elements.colorHexInput.value = DEFAULT_COLOR;
     elements.colorHexInput.setAttribute("aria-invalid", "false");
+    syncColorPicker();
     elements.statusText.textContent = "Ready to export at 2x resolution.";
     renderColors();
     renderBadges();
@@ -268,6 +277,19 @@
     state.color = parsed;
     saveState();
     event.currentTarget.setAttribute("aria-invalid", "false");
+    syncColorPicker();
+    renderColors();
+    renderPreview();
+  });
+
+  elements.colorPickerInput.addEventListener("input", (event) => {
+    const parsed = parseHexColor(event.currentTarget.value);
+    if (!parsed) return;
+    state.color = parsed;
+    saveState();
+    elements.colorHexInput.value = parsed;
+    elements.colorHexInput.setAttribute("aria-invalid", "false");
+    syncColorPicker();
     renderColors();
     renderPreview();
   });
@@ -312,6 +334,7 @@
   elements.usernameInput.value = state.username;
   elements.messageInput.value = state.message;
   elements.colorHexInput.value = state.color;
+  syncColorPicker();
   renderColors();
   renderBadges();
   renderPreview();

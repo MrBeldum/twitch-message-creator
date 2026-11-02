@@ -10,7 +10,7 @@ Inter font keeps previews and downloads consistent without a network request.
 ## Features
 
 - Offline and ad-free: no analytics, uploads, or third-party calls for fonts
-- Custom hex username colors plus the classic Twitch palette
+- Custom hex username colors, a native color picker synced with the hex field, and the classic Twitch palette
 - Built-in badges and optional custom badge images
 - Remembers text, color, and built-in badges across reloads on the same browser/origin
 - 2x PNG export with Twitch-style dark chat background
