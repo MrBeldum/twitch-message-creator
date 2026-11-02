@@ -35,6 +35,7 @@
   ];
 
   const DEFAULT_COLOR = "#8a2be2";
+  const STORAGE_KEY = "tmc-state-v1";
 
   const state = {
     username: "",
@@ -43,6 +44,38 @@
     selectedBadgeIds: [],
     customBadges: [],
   };
+
+  function restoreState() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (!saved || typeof saved !== "object" || Array.isArray(saved)) return;
+      if (typeof saved.username === "string") state.username = saved.username.slice(0, 40);
+      if (typeof saved.message === "string") state.message = saved.message.slice(0, 500);
+      if (typeof saved.color === "string") {
+        state.color = parseHexColor(saved.color) || DEFAULT_COLOR;
+      }
+      if (Array.isArray(saved.selectedBadgeIds)) {
+        state.selectedBadgeIds = [...new Set(saved.selectedBadgeIds)]
+          .filter((id) => BADGES.some((badge) => badge.id === id));
+      }
+    } catch {
+      // Storage may be corrupt or unavailable; keep the editor usable.
+    }
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        username: state.username,
+        message: state.message,
+        color: state.color,
+        selectedBadgeIds: state.selectedBadgeIds
+          .filter((id) => BADGES.some((badge) => badge.id === id)),
+      }));
+    } catch {
+      // Disabled storage or a full quota must not interrupt editing/export.
+    }
+  }
 
   const elements = {
     usernameInput: document.querySelector("#usernameInput"),
@@ -82,6 +115,7 @@
         button.setAttribute("aria-pressed", String(state.color === color));
         button.addEventListener("click", () => {
           state.color = color;
+          saveState();
           elements.colorHexInput.value = color;
           elements.colorHexInput.setAttribute("aria-invalid", "false");
           renderColors();
@@ -120,6 +154,7 @@
     } else {
       state.selectedBadgeIds.splice(index, 1);
     }
+    saveState();
     renderBadges();
     renderPreview();
   }
@@ -200,6 +235,11 @@
   }
 
   function reset() {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Reset the UI even when browser storage is unavailable.
+    }
     state.username = "";
     state.message = "";
     state.color = DEFAULT_COLOR;
@@ -226,6 +266,7 @@
       return;
     }
     state.color = parsed;
+    saveState();
     event.currentTarget.setAttribute("aria-invalid", "false");
     renderColors();
     renderPreview();
@@ -233,11 +274,13 @@
 
   elements.usernameInput.addEventListener("input", (event) => {
     state.username = event.currentTarget.value;
+    saveState();
     renderPreview();
   });
 
   elements.messageInput.addEventListener("input", (event) => {
     state.message = event.currentTarget.value;
+    saveState();
     renderPreview();
   });
 
@@ -265,6 +308,10 @@
   elements.downloadButton.addEventListener("click", downloadMessage);
   elements.resetButton.addEventListener("click", reset);
 
+  restoreState();
+  elements.usernameInput.value = state.username;
+  elements.messageInput.value = state.message;
+  elements.colorHexInput.value = state.color;
   renderColors();
   renderBadges();
   renderPreview();
